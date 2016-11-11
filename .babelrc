@@ -1,0 +1,20 @@
+{
+  "presets": ["stage-0", "es2015", "react"],
+  "plugins": [[
+      "module-resolver", {
+        "root": ["./"],
+        "alias": {
+          "utils": "./src/utils",
+          "config": "./config.js",
+          "web": "./src/web",
+          "server": "./src/server"
+        }
+      }
+    ],
+    "typecheck",
+    "syntax-flow",
+    "transform-flow-strip-types",
+    "autobind-class-methods"
+  ],
+  "ignore": ["src/public"]
+}
