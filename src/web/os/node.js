@@ -22,6 +22,9 @@ export default class TreeNode {
     this.children.push(node.id);
     this.store.add(node);
     this.store.emit(`${this.id.toString()}:add`, node);
+    if (this.store.refresh) {
+      this.store.refresh();
+    }
     return node;
   }
   remove(nodeId) {

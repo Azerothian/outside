@@ -13,8 +13,10 @@ const placeholderSource = {
     const target = monitor.getDropResult();
 
     if (target && item) {
-      console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
-      target.osNode.add(item.osNode.id);
+      if (item.osNode.id.toString() !== target.osNode.id.toString()) {
+        console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
+        target.osNode.add(item.osNode.id);
+      }
     }
   }
 };
@@ -26,21 +28,6 @@ const placeholderTarget = {
     }
     return {osNode};
   },
-
-  // drop(props, monitor, component) {
-  //   const hasDroppedOnChild = monitor.didDrop();
-  //   if (hasDroppedOnChild) { // already handled
-  //     return;
-  //   }
-  //   // const {osNode} = props;
-  //   // console.log("placeholderTarget", {osNode, component, this: this, hasDroppedOnChild, item: monitor.getItem()});
-  //   // if (osNode) {
-  //   //   //move
-  //   // } else {
-  //   //   //create
-  //   // }
-  //   //moveKnight(props.x, props.y);
-  // },
   hover(props, monitor, component) {
     const dragIndex = monitor.getItem().index;
     const hoverIndex = props.index;

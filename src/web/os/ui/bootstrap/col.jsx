@@ -34,7 +34,12 @@ export default function Col(props, context) {
     {props.children}
   </div>);
 }
-Col.displayName = "Col";
+Col.displayName = "Column";
 Col.osDesigner = {
   renderInside: true,
+  defaults: {
+    props: {
+      xs: 12,
+    },
+  }
 };

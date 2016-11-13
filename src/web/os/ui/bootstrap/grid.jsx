@@ -1,4 +1,5 @@
 import React from "react";
+import Row from "./row";
 
 export default function Grid(props) {
   let className = props.className || "";
@@ -11,3 +12,6 @@ export default function Grid(props) {
 }
 
 Grid.displayName = "Grid";
+Grid.osDesigner = {
+  restrictTo: [Row]
+};

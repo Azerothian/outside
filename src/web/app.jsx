@@ -2,10 +2,11 @@ import React from "react";
 import {DragDropContext} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import DataStore from "web/os/data-store";
 import Grid from "web/os/ui/bootstrap/grid";
 import Row from "web/os/ui/bootstrap/row";
 import Col from "web/os/ui/bootstrap/col";
+
+import ItemList from "web/os/ui/list";
 
 export default DragDropContext(HTML5Backend)(React.createClass({
   componentWillMount() {
@@ -18,9 +19,7 @@ export default DragDropContext(HTML5Backend)(React.createClass({
     return (<Grid fluid>
       <Row>
         <Col xs={2}>
-          <Row>
-
-          </Row>
+          <ItemList store={this.props.store} />
         </Col>
         <Col xs={10}>
           {this.props.store.top.render()}

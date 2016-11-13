@@ -1,4 +1,4 @@
-import TreeNode from "./tree-node";
+import TreeNode from "./node";
 
 import {EventEmitter} from "events";
 
@@ -7,7 +7,7 @@ export default class DataStore extends EventEmitter {
     super();
     this.data = {};
     this.top = new TreeNode(this, "div", {});
-    this.data[this.top.id.toString()] = top;
+    this.data[this.top.id.toString()] = this.top;
   }
   add(node) {
     if (node instanceof TreeNode) {
@@ -28,5 +28,11 @@ export default class DataStore extends EventEmitter {
   }
   off() {
     return this.removeListener.apply(this, arguments);
+  }
+  register(element) {
+    if (!this.design) {
+      this.design = [];
+    }
+    this.design.push(element);
   }
 }
