@@ -7,29 +7,25 @@ import Grid from "web/os/ui/bootstrap/grid";
 import Row from "web/os/ui/bootstrap/row";
 import Col from "web/os/ui/bootstrap/col";
 
-class RenderNodeId extends React.Component {
-  render() {
-    return (<div>
-      {this.props.osNodeId.toString()}
-    </div>);
-  }
-}
-RenderNodeId.propTypes = {
-  osNodeId: React.PropTypes.string.isRequired,
-};
-
-RenderNodeId.displayName = "RenderNodeId";
-
-const store = new DataStore();
-const row = store.top.create(Grid).create(Row);
-row.create(Col, {xs: 6});
-row.create(Col, {xs: 6}).create(RenderNodeId);
-
-store.enableDesigner = true;
-
-
 export default DragDropContext(HTML5Backend)(React.createClass({
+  componentWillMount() {
+    this.props.store.refresh = this.handleForceUpdate;
+  },
+  handleForceUpdate() {
+    return this.forceUpdate();
+  },
   render() {
-    return store.top.render();
+    return (<Grid fluid>
+      <Row>
+        <Col xs={2}>
+          <Row>
+
+          </Row>
+        </Col>
+        <Col xs={10}>
+          {this.props.store.top.render()}
+        </Col>
+      </Row>
+    </Grid>);
   },
 }));

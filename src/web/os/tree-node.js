@@ -14,19 +14,36 @@ export default class TreeNode {
     if (parent) {
       this.parentId = parent.id;
     }
+    console.log("construct node", this);
   }
   create(tag, props, options) {
+    console.log("creating child", {tag, props, options});
     const node = new TreeNode(this.store, tag, props, options, this);
     this.children.push(node.id);
     this.store.add(node);
     this.store.emit(`${this.id.toString()}:add`, node);
     return node;
   }
-  remove(node) {
-    this.children = this.children.filter((n) => {
-      return n.id !== node.id;
+  remove(nodeId) {
+    this.children = (this.children || []).filter((id) => {
+      return id !== nodeId;
     });
-    return this.store.emit(`${this.id.toString()}:remove`, node);
+    const node = this.store.get(nodeId);
+    console.log(`${this.id.toString()}:remove-child`, {id: nodeId, parentId: node.parentId});
+    return this.store.emit(`${this.id.toString()}:remove-child`, node);
+  }
+  add(nodeId) {
+    console.log("nodeid", nodeId, this.store.get(nodeId));
+    const node = this.store.get(nodeId);
+    console.log(`${this.id.toString()}:add`, {id: node.id, parentId: node.parentId, newId: this.id});
+    if (node.parentId) {
+      this.store.get(node.parentId).remove(node.id);
+    }
+    this.children.push(node.id);
+    node.parentId = this.id;
+    console.log(`${this.id.toString()}:add-child`, {parentId: this.id, childId: node.id});
+    return this.store.refresh();
+    //return this.store.emit(`${this.id.toString()}:add-child`, node);
   }
   render() {
     if (this.store.enableDesigner) {
@@ -35,28 +52,43 @@ export default class TreeNode {
     return this.renderElement();
   }
   renderDesigner() {
+    const placeholderProps = {
+      osNode: this,
+      key: `placeholder:${this.id.toString()}`,
+    };
     if (typeof this.tag !== "string") {
       if ((this.tag.osDesigner || {}).renderInside) {
-        return this.renderElement({children: React.createElement(Placeholder, {osNode: this})});
+        return this.renderElement({}, React.createElement(Placeholder, placeholderProps, this.renderChildren()));
       }
     }
-    return React.createElement(Placeholder, {osNode: this}, this.renderElement());
+    return React.createElement(Placeholder, placeholderProps, this.renderElement());
   }
-  renderElement(props = {}) {
+  renderChildren() {
+    if (this.children.length > 0) {
+      if (this.children.length === 1) {
+        return this.store.get(this.children[0]).render();
+      }
+      return this.children.map((id) => {
+        return this.store.get(id).render();
+      });
+    }
+    return undefined;
+  }
+  renderElement(props = {}, children) {
     if (typeof this.tag !== "string") {
       const propTypes = (this.tag.propTypes || {});
-      if (propTypes.osNodeId) {
-        props = Object.assign(props, {osNodeId: this.id});
-      }
       if (propTypes.osStore) {
         props = Object.assign(props, {osStore: this.store});
       }
+      if (propTypes.osNode) {
+        props = Object.assign(props, {osNode: this});
+      }
     }
-    let args = [this.tag, Object.assign(props, this.props)];
-    if (this.children.length > 0) {
-      args = args.concat(this.children.map((id) => {
-        return this.store.get(id).render();
-      }));
+    let args = [this.tag, Object.assign({key: this.id.toString()}, props, this.props)];
+    if (this.children.length > 0 && !children) {
+      args = args.concat(this.renderChildren());
+    } else if (children) {
+      args = args.concat(children);
     }
     return React.createElement.apply(React, args);
   }

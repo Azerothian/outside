@@ -5,23 +5,42 @@ import {DragSource, DropTarget} from "react-dnd";
 
 
 const placeholderSource = {
-  beginDrag(props) {
-    return {
-      id: props.id,
-      index: props.index
-    };
+  beginDrag({osNode}) {
+    return {osNode};
+  },
+  endDrag(props, monitor) {
+    const item = monitor.getItem();
+    const target = monitor.getDropResult();
+
+    if (target && item) {
+      console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
+      target.osNode.add(item.osNode.id);
+    }
   }
 };
-
 const placeholderTarget = {
-  drop(props, monitor, component) {
+  drop({osNode}, monitor, component) {
     const hasDroppedOnChild = monitor.didDrop();
-    if (hasDroppedOnChild) { // already handled
-      return;
+    if (hasDroppedOnChild) {
+      return undefined;
     }
-    console.log("placeholderTarget", props);
-    //moveKnight(props.x, props.y);
+    return {osNode};
   },
+
+  // drop(props, monitor, component) {
+  //   const hasDroppedOnChild = monitor.didDrop();
+  //   if (hasDroppedOnChild) { // already handled
+  //     return;
+  //   }
+  //   // const {osNode} = props;
+  //   // console.log("placeholderTarget", {osNode, component, this: this, hasDroppedOnChild, item: monitor.getItem()});
+  //   // if (osNode) {
+  //   //   //move
+  //   // } else {
+  //   //   //create
+  //   // }
+  //   //moveKnight(props.x, props.y);
+  // },
   hover(props, monitor, component) {
     const dragIndex = monitor.getItem().index;
     const hoverIndex = props.index;
@@ -84,13 +103,30 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
     isOver: PropTypes.bool.isRequired,
     // inside: PropTypes.bool.
   },
+  componentWillMount() {
+    // const {id} = this.props.osNode;
+    // this.store = this.props.osNode.store;
+    // this.store.on(`${id.toString()}:add-child`, this.handleUpdate);
+    // this.store.on(`${id.toString()}:remove-child`, this.handleUpdate);
+  },
+  componentWillUnMount() {
+    // const {id} = this.props.osNode;
+    // this.store.off(`${id.toString()}:add-child`, this.handleUpdate);
+    // this.store.off(`${id.toString()}:remove-child`, this.handleUpdate);
+  },
+  handleUpdate() {
+    console.log("updating", this.props.osNode.id);
+    return this.forceUpdate();
+  },
   render() {
+    console.log("rendering", this.props.osNode.id);
     const {connectDropTarget, connectDragSource, isOver} = this.props;
     let color = "rgba(0, 0, 0, 0.1)";
     if (isOver) {
       color = "rgba(0, 0, 0, 0.8)";
     }
     let name = "Element";
+    let id = this.props.osNode.id.toString();
     if (this.props.osNode.name) {
       name = this.props.osNode.name;
     } else if (this.props.osNode.tag.displayName) {
@@ -106,13 +142,25 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
     }}>
       <div style={{
         position: "absolute",
+        left: 0,
+        top: 0,
+        width: 300,
+        height: 20,
+        borderRight: `1px solid ${color}`,
+        borderBottom: `1px solid ${color}`,
+        textAlign: "center",
+        color: color,
+      }}>
+        {id}
+      </div>
+      <div style={{
+        position: "absolute",
         right: 0,
         top: 0,
         width: 100,
         height: 20,
-        marginTop: -1,
-        marginRight: -1,
-        border: `1px solid ${color}`,
+        borderLeft: `1px solid ${color}`,
+        borderBottom: `1px solid ${color}`,
         textAlign: "center",
         color: color,
       }}>

@@ -11,7 +11,7 @@ const webpackDevConfig = require("./webpack-dev.config");
 const webpackProdConfig = require("./webpack-prod.config");
 const sourcemaps = require("gulp-sourcemaps");
 
-gulp.task("webpack:dev-server", ["default", "watch"], (callback) => {
+gulp.task("webpack:dev-server", [], (callback) => {
   // Start a webpack-dev-server
   var compiler = webpack(webpackDevConfig);
   new WebpackDevServer(compiler, {
