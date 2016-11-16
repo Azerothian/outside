@@ -29,10 +29,4 @@ export default class DataStore extends EventEmitter {
   off() {
     return this.removeListener.apply(this, arguments);
   }
-  register(element) {
-    if (!this.design) {
-      this.design = [];
-    }
-    this.design.push(element);
-  }
 }

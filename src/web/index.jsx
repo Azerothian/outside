@@ -3,33 +3,46 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 import DataStore from "web/os/store";
-import Grid from "web/os/ui/bootstrap/grid";
-import Row from "web/os/ui/bootstrap/row";
-import Col from "web/os/ui/bootstrap/col";
+import UiStore from "web/ui/store";
+import Bootstrap from "web/ui/lib/bootstrap";
+import Formsy from "web/ui/lib/formsy";
+import FormsyMaterialUi from "web/ui/lib/formsy-material-ui";
+// import Grid from "web/ui/lib/bootstrap/grid";
+// import Row from "web/ui/lib/bootstrap/row";
+// import Col from "web/ui/lib/bootstrap/col";
 
-class RenderNodeId extends React.Component {
-  render() {
-    return (<div>
-      {`Id: ${this.props.osNode.id.toString()}`}<br/>
-      {`ParentId: ${this.props.osNode.parentId.toString()}`}
-    </div>);
-  }
-}
+// import Formsy from "web/ui/lib/formsy";
 
-RenderNodeId.propTypes = {
-  osNode: React.PropTypes.object.isRequired,
-};
 
-RenderNodeId.displayName = "RenderNodeId";
+// class RenderNodeId extends React.Component {
+//   render() {
+//     return (<div>
+//       {`Id: ${this.props.osNode.id.toString()}`}<br/>
+//       {`ParentId: ${this.props.osNode.parentId.toString()}`}
+//     </div>);
+//   }
+// }
+
+// RenderNodeId.propTypes = {
+//   osNode: React.PropTypes.object.isRequired,
+// };
+
+// RenderNodeId.displayName = "RenderNodeId";
 
 const store = new DataStore();
-store.register(Grid);
-store.register(Row);
-store.register(Col);
+store.ui = new UiStore(store);
 
-const row = store.top.create(Grid, {fluid: true}).create(Row);
-row.create(Col, {xs: 6});
-row.create(Col, {xs: 6}).create(RenderNodeId);
+store.ui.register(Bootstrap);
+store.ui.register(Formsy);
+store.ui.register(FormsyMaterialUi);
+
+// store.register(Grid);
+// store.register(Row);
+// store.register(Col);
+
+// const row = store.top.create(Grid, {fluid: true}).create(Row);
+// row.create(Col, {xs: 6});
+// row.create(Col, {xs: 6}).create(RenderNodeId);
 
 
 

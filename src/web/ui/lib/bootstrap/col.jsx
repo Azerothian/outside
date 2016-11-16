@@ -35,11 +35,37 @@ export default function Col(props, context) {
   </div>);
 }
 Col.displayName = "Column";
+
+
+import ItemTypes from "web/ui/item-types";
+import Text from "formsy-material-ui/lib/FormsyText";
+
 Col.osDesigner = {
   renderInside: true,
-  defaults: {
-    props: {
-      xs: 12,
-    },
+  itemType: ItemTypes.ELEMENT,
+  form() {
+    return (<div>
+      <Text name="className" fullWidth floatingLabelText="Class" />
+      <Text name="xs" validations="isNumeric" fullWidth floatingLabelText="xs" />
+      <Text name="sm" validations="isNumeric" fullWidth floatingLabelText="sm" />
+      <Text name="md" validations="isNumeric" fullWidth floatingLabelText="md" />
+      <Text name="lg" validations="isNumeric" fullWidth floatingLabelText="ls" />
+    </div>);
+  },
+  processForm({className, xs, sm, md, lg}) {
+    let props = {className};
+    if (xs !== "") {
+      props.xs = parseInt(xs);
+    }
+    if (sm !== "") {
+      props.sm = parseInt(sm);
+    }
+    if (md !== "") {
+      props.md = parseInt(md);
+    }
+    if (lg !== "") {
+      props.lg = parseInt(lg);
+    }
+    return props;
   }
 };

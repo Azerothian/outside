@@ -1,7 +1,6 @@
 import React from "react";
 import uuid from "node-uuid";
 
-import Placeholder from "./ui/placeholder";
 
 export default class TreeNode {
   constructor(store, tag, props, options, parent) {
@@ -49,23 +48,12 @@ export default class TreeNode {
     //return this.store.emit(`${this.id.toString()}:add-child`, node);
   }
   render() {
-    if (this.store.enableDesigner) {
-      return this.renderDesigner();
+    if (this.store.overrideRender) {
+      return this.store.overrideRender.apply(this, []);// this.renderDesigner();
     }
     return this.renderElement();
   }
-  renderDesigner() {
-    const placeholderProps = {
-      osNode: this,
-      key: `placeholder:${this.id.toString()}`,
-    };
-    if (typeof this.tag !== "string") {
-      if ((this.tag.osDesigner || {}).renderInside) {
-        return this.renderElement({}, React.createElement(Placeholder, placeholderProps, this.renderChildren()));
-      }
-    }
-    return React.createElement(Placeholder, placeholderProps, this.renderElement());
-  }
+
   renderChildren() {
     if (this.children.length > 0) {
       if (this.children.length === 1) {

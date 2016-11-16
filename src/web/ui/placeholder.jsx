@@ -4,6 +4,7 @@ import ItemTypes from "./item-types";
 import {DragSource, DropTarget} from "react-dnd";
 
 
+
 const placeholderSource = {
   beginDrag({osNode}) {
     return {osNode};
@@ -13,9 +14,12 @@ const placeholderSource = {
     const target = monitor.getDropResult();
 
     if (target && item) {
-      if (item.osNode.id.toString() !== target.osNode.id.toString()) {
-        console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
-        target.osNode.add(item.osNode.id);
+      const itemType = (target.osNode.tag.osDesigner || {}).itemType || ItemTypes.ELEMENT;
+      if (itemType === ItemTypes.ELEMENT) {
+        if (item.osNode.id.toString() !== target.osNode.id.toString()) {
+          console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
+          target.osNode.add(item.osNode.id);
+        }
       }
     }
   }
@@ -32,7 +36,7 @@ const placeholderTarget = {
     const dragIndex = monitor.getItem().index;
     const hoverIndex = props.index;
 
-    // Don't replace items with themselves
+    // Don"t replace items with themselves
     if (dragIndex === hoverIndex) {
       return;
     }
@@ -66,9 +70,9 @@ const placeholderTarget = {
     // Time to actually perform the action
     props.moveCard(dragIndex, hoverIndex);
 
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
+    // Note: we"re mutating the monitor item here!
+    // Generally it"s better to avoid mutations,
+    // but it"s good here for the sake of performance
     // to avoid expensive index searches.
     monitor.getItem().index = hoverIndex;
   }

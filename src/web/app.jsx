@@ -2,11 +2,20 @@ import React from "react";
 import {DragDropContext} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import Grid from "web/os/ui/bootstrap/grid";
-import Row from "web/os/ui/bootstrap/row";
-import Col from "web/os/ui/bootstrap/col";
+import Grid from "web/ui/lib/bootstrap/grid";
+import Row from "web/ui/lib/bootstrap/row";
+import Col from "web/ui/lib/bootstrap/col";
 
-import ItemList from "web/os/ui/list";
+import ControlList from "web/ui/components/control-list";
+import CreateControl from "web/ui/components/create";
+
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import injectTapEventPlugin from "react-tap-event-plugin";
+
+// Needed for onTouchTap
+// http://stackoverflow.com/a/34015469/988941
+injectTapEventPlugin();
+
 
 export default DragDropContext(HTML5Backend)(React.createClass({
   componentWillMount() {
@@ -16,15 +25,20 @@ export default DragDropContext(HTML5Backend)(React.createClass({
     return this.forceUpdate();
   },
   render() {
-    return (<Grid fluid>
-      <Row>
-        <Col xs={2}>
-          <ItemList store={this.props.store} />
-        </Col>
-        <Col xs={10}>
-          {this.props.store.top.render()}
-        </Col>
-      </Row>
-    </Grid>);
+    return (<MuiThemeProvider>
+      <div>
+        <CreateControl store={this.props.store} />
+        <Grid fluid>
+          <Row>
+            <Col xs={2}>
+              <ControlList store={this.props.store} />
+            </Col>
+            <Col xs={10}>
+              {this.props.store.top.render()}
+            </Col>
+          </Row>
+        </Grid>
+      </div>
+    </MuiThemeProvider>);
   },
 }));

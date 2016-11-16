@@ -24,7 +24,7 @@ gulp.task("webpack:dev-server", [], (callback) => {
     // lazy: true,
     // filename: "bundle.js",
     watchOptions: {
-      aggregateTimeout: 300,
+      aggregateTimeout: 2000,
       poll: 1000,
     },
     publicPath: webpackDevConfig.output.publicPath,
@@ -94,7 +94,7 @@ gulp.task("compile:utils", ["lint:utils"], () => {
 
 gulp.task("compile:web", ["lint:web"], () => {
   return gulp.src(["src/web/**/*"])
-    .pipe(sourcemaps.init({identityMap: true}))
+    .pipe(sourcemaps.init({identityMap: false}))
     .pipe(babel({}))
     .pipe(sourcemaps.write(".", {includeContent: true}))
     .pipe(gulp.dest("build/web"));
