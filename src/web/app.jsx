@@ -8,7 +8,7 @@ import Col from "web/ui/lib/bootstrap/col";
 
 import ControlList from "web/ui/components/control-list";
 import CreateControl from "web/ui/components/create";
-
+import DeleteControl from "web/ui/components/delete";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import injectTapEventPlugin from "react-tap-event-plugin";
 
@@ -28,6 +28,7 @@ export default DragDropContext(HTML5Backend)(React.createClass({
     return (<MuiThemeProvider>
       <div>
         <CreateControl store={this.props.store} />
+        <DeleteControl store={this.props.store} />
         <Grid fluid>
           <Row>
             <Col xs={2}>

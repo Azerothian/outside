@@ -35,6 +35,9 @@ export default class UiStore extends EventEmitter {
   requestCreate(osNode, control) {
     return this.emit("on.create", {osNode, control});
   }
+  requestDelete(osNode) {
+    return this.emit("on.delete", {osNode});
+  }
   createElement(osNode, control, newProps) {
     let options = {};
     let props = Object.assign({}, props, newProps);
@@ -44,6 +47,13 @@ export default class UiStore extends EventEmitter {
       options = defaults.options;
     }
     return osNode.create(control, props, options);
+  }
+  deleteElement(osNode) {
+    if (osNode.parentId) {
+      this.store.get(osNode.id).remove(osNode.id);
+    }
+    this.store.remove(osNode);
+    return this.store.refresh();
   }
 
 }

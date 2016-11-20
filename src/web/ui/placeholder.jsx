@@ -3,7 +3,7 @@ import {findDOMNode} from "react-dom";
 import ItemTypes from "./item-types";
 import {DragSource, DropTarget} from "react-dnd";
 
-
+import ActionDelete from "material-ui/svg-icons/action/delete";
 
 const placeholderSource = {
   beginDrag({osNode}) {
@@ -17,7 +17,7 @@ const placeholderSource = {
       const itemType = (target.osNode.tag.osDesigner || {}).itemType || ItemTypes.ELEMENT;
       if (itemType === ItemTypes.ELEMENT) {
         if (item.osNode.id.toString() !== target.osNode.id.toString()) {
-          console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
+          //console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
           target.osNode.add(item.osNode.id);
         }
       }
@@ -105,6 +105,9 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
     // this.store.off(`${id.toString()}:add-child`, this.handleUpdate);
     // this.store.off(`${id.toString()}:remove-child`, this.handleUpdate);
   },
+  handleDeleteRequest() {
+    return this.props.osNode.store.ui.requestDelete(this.props.osNode, this.props.tag);
+  },
   handleUpdate() {
     console.log("updating", this.props.osNode.id);
     return this.forceUpdate();
@@ -156,6 +159,7 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
         color: color,
       }}>
         {name}
+        <ActionDelete onTouchTap={this.handleDeleteRequest} />
       </div>
       {this.props.children}
     </div>));
