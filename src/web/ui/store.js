@@ -50,7 +50,7 @@ export default class UiStore extends EventEmitter {
   }
   deleteElement(osNode) {
     if (osNode.parentId) {
-      this.store.get(osNode.id).remove(osNode.id);
+      this.store.get(osNode.parentId).remove(osNode.id);
     }
     this.store.remove(osNode);
     return this.store.refresh();

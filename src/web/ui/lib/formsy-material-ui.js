@@ -12,13 +12,16 @@ import Toggle from "formsy-material-ui/lib/FormsyToggle";
 
 import ItemTypes from "web/ui/item-types";
 
+import Formsy from "./formsy";
+
 Text.osDesigner = {
+  requiredParent: Formsy.control.Form,
   itemType: ItemTypes.CONTROL,
   form: () => {
     return (<div>
       <Text name="name" required fullWidth floatingLabelText="Name" />
       <Toggle name="fullWidth" label="Full Width?" />
-      <Text name="className" required fullWidth floatingLabelText="Class" />
+      <Text name="className" fullWidth floatingLabelText="Class" />
     </div>);
   }
 };

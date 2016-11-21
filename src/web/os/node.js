@@ -31,7 +31,7 @@ export default class TreeNode {
       return id !== nodeId;
     });
     const node = this.store.get(nodeId);
-    console.log(`${this.id.toString()}:remove-child`, {id: nodeId, parentId: node.parentId, children: this.children});
+    console.log(`${this.id.toString()}:remove-child`, {id: nodeId, parentId: node.parentId, children: this.children, t: this});
     return this.store.emit(`${this.id.toString()}:remove-child`, node);
   }
   add(nodeId) {
