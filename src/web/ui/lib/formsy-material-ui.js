@@ -15,7 +15,7 @@ import ItemTypes from "web/ui/item-types";
 import Formsy from "./formsy";
 
 Text.osDesigner = {
-  requiredParent: Formsy.control.Form,
+  requiredParent: Formsy.controls.Form,
   itemType: ItemTypes.CONTROL,
   form: () => {
     return (<div>

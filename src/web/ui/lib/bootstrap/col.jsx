@@ -1,4 +1,5 @@
 import React from "react";
+import Bootstrap from "./index";
 
 const gridOptions = ["xs", "sm", "md", "lg"];
 
@@ -41,6 +42,7 @@ import ItemTypes from "web/ui/item-types";
 import Text from "formsy-material-ui/lib/FormsyText";
 
 Col.osDesigner = {
+  requiredParent: Bootstrap.controls.Row,
   renderInside: true,
   itemType: ItemTypes.ELEMENT,
   form() {

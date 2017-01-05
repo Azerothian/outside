@@ -4,6 +4,13 @@ import ItemTypes from "./item-types";
 import {DragSource, DropTarget} from "react-dnd";
 
 import ActionDelete from "material-ui/svg-icons/action/delete";
+import ActionAssignment from "material-ui/svg-icons/action/assignment";
+
+import IconMenu from "material-ui/IconMenu";
+import MenuItem from "material-ui/MenuItem";
+import IconButton from "material-ui/IconButton";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+
 
 const placeholderSource = {
   beginDrag({osNode}) {
@@ -115,7 +122,7 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
   render() {
     console.log("rendering", this.props.osNode.id);
     const {connectDropTarget, connectDragSource, isOver} = this.props;
-    let color = "rgba(0, 0, 0, 0.1)";
+    let color = "rgba(0, 0, 0, 0.3)";
     if (isOver) {
       color = "rgba(0, 0, 0, 0.8)";
     }
@@ -130,37 +137,29 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
     }
     return connectDragSource(connectDropTarget(<div style={{
       position: "relative",
-      minHeight: 40,
+      minHeight: 60,
       border: `1px solid ${color}`,
-      paddingTop: 29,
     }}>
-      <div style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        width: 300,
-        height: 30,
-        borderRight: `1px solid ${color}`,
-        borderBottom: `1px solid ${color}`,
-        textAlign: "center",
-        color: color,
-      }}>
-        {id}
-      </div>
-      <div style={{
-        position: "absolute",
-        right: 0,
-        top: 0,
-        width: 100,
-        height: 30,
-        paddingTop: 2,
-        borderLeft: `1px solid ${color}`,
-        borderBottom: `1px solid ${color}`,
-        textAlign: "center",
-        color: color,
-      }}>
-        {name}
-        <ActionDelete onTouchTap={this.handleDeleteRequest} />
+      <div style={{height: 48, borderBottom: `1px solid ${color}`}}>
+        <div style={{
+          float: "left",
+          height: 48,
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 15,
+          background: "#eeeeee",
+          borderBottom: `1px solid ${color}`,
+        }}>
+          {`${name}`}
+        </div>
+        <IconMenu
+          style={{float: "right"}}
+          
+          iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+          targetOrigin={{horizontal: "right", vertical: "top"}} >
+          <MenuItem primaryText="Delete" onTouchTap={this.handleDeleteRequest} />
+          <MenuItem primaryText="Properties" />
+        </IconMenu>
       </div>
       {this.props.children}
     </div>));
