@@ -3,13 +3,14 @@ import uuid from "node-uuid";
 
 
 export default class TreeNode {
-  constructor(store, tag, props, options, parent) {
+  constructor(store, tag, props, options, parent, index = 0) {
     this.id = uuid.v4();
     this.tag = tag;
     this.props = props;
     this.children = [];
     this.store = store;
     this.options = options;
+    this.index = index;
     if (parent) {
       this.parentId = parent.id;
     }
@@ -49,7 +50,7 @@ export default class TreeNode {
   }
   render() {
     if (this.store.overrideRender) {
-      return this.store.overrideRender.apply(this, []);// this.renderDesigner();
+      return this.store.overrideRender.apply(this, []);
     }
     return this.renderElement();
   }
@@ -60,7 +61,9 @@ export default class TreeNode {
         return this.store.get(this.children[0]).render();
       }
       return this.children.map((id) => {
-        return this.store.get(id).render();
+        return this.store.get(id);
+      }).sort((a, b) => (a.index - b.index)).map((child) => {
+        return child.render();
       });
     }
     return undefined;
