@@ -4,11 +4,11 @@
 # TODO 
 ## Designer
  - Delete Items ( drag to bottom?)
- - Restrict Items e.g. only allow formsy components underneath a Form object can be many levels.
-   - this can also be for a reject e.g. form within a form.
-   - parent check
- - Placeholders can restrict what item types can be dropped
-   - can mark item as not accepts children, it will disable any interaction with contents
+/ - Restrict Items e.g. only allow formsy components underneath a Form object can be many levels.
+/   - this can also be for a reject e.g. form within a form.
+/   - parent check
+/ - Placeholders can restrict what item types can be dropped
+/   - can mark item as not accepts children, it will disable any interaction with contents
  - Drag and reorder components
    - Element spacing
  - add properties editor for add/update

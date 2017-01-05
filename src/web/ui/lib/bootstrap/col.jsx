@@ -42,7 +42,10 @@ import ItemTypes from "web/ui/item-types";
 import Text from "formsy-material-ui/lib/FormsyText";
 
 Col.osDesigner = {
-  requiredParent: Bootstrap.controls.Row,
+  requiredParent: {
+    immediate: true,
+    tag: Bootstrap.controls.Row,
+  },
   renderInside: true,
   itemType: ItemTypes.ELEMENT,
   form() {

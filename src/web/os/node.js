@@ -48,6 +48,20 @@ export default class TreeNode {
     return this.store.refresh();
     //return this.store.emit(`${this.id.toString()}:add-child`, node);
   }
+  getParents() {
+    if (!this.parentId) {
+      return [];
+    }
+    let arr = [];
+    let node = this;
+    do {
+      if (node.parentId) {
+        node = this.store.get(node.parentId);
+      }
+      arr.push(node);
+    } while (node.parentId);
+    return arr;
+  }
   render() {
     if (this.store.overrideRender) {
       return this.store.overrideRender.apply(this, []);

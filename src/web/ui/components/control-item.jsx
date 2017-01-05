@@ -3,6 +3,7 @@ import ItemTypes from "../item-types";
 import {DragSource} from "react-dnd";
 import {ListItem} from "material-ui/List";
 
+import {validateEndDrag} from "../logic/dnd";
 /**
  * Specifies the drag source contract.
  * Only `beginDrag` function is required.
@@ -14,25 +15,10 @@ const source = {
   endDrag(props, monitor) {
     const item = monitor.getItem();
     const target = monitor.getDropResult();
-
-    if (target && item) {
-      // const {defaults} = (item.control.osDesigner || {});
-      // let props = {};
-      // let options = {};
-      // if (defaults) {
-      //   props = defaults.props;
-      //   options = defaults.options;
-      // }
-      // console.log("calling create", {control: item.control, props, options});
-      // return target.osNode.create(item.control, props, options);
-      console.log("target", target);
-      const itemType = (target.osNode.tag.osDesigner || {}).itemType || ItemTypes.ELEMENT;
-      console.log("itemType", itemType);
-      if (itemType === ItemTypes.ELEMENT) {
-        return target.osNode.store.ui.requestCreate(target.osNode, item.control);
-      }
-    }
-    return undefined;
+    return validateEndDrag({item, target}).then(() => {
+      //success
+      return target.osNode.store.ui.requestCreate(target.osNode, item.control);
+    }, () => {});
   }
 };
 function connect(connect, monitor) {

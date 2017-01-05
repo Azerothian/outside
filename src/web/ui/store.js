@@ -1,6 +1,6 @@
 
 import React from "react";
-import Placeholder from "./placeholder";
+import Placeholder from "./components/placeholder";
 import {EventEmitter} from "events";
 
 function injectDesigner(store) {
@@ -33,7 +33,11 @@ export default class UiStore extends EventEmitter {
     return this.removeListener.apply(this, arguments);
   }
   requestCreate(osNode, control) {
-    return this.emit("on.create", {osNode, control});
+    if ((control.osDesigner || {}).form) {
+      return this.emit("on.create", {osNode, control});
+    } else {
+      return this.createElement(osNode, control, {});
+    }
   }
   requestDelete(osNode) {
     return this.emit("on.delete", {osNode});

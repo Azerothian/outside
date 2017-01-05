@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react";
 import {findDOMNode} from "react-dom";
-import ItemTypes from "./item-types";
+import ItemTypes from "../item-types";
 import {DragSource, DropTarget} from "react-dnd";
 
 import ActionDelete from "material-ui/svg-icons/action/delete";
@@ -11,6 +11,7 @@ import MenuItem from "material-ui/MenuItem";
 import IconButton from "material-ui/IconButton";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 
+import {validateEndDrag} from "../logic/dnd";
 
 const placeholderSource = {
   beginDrag({osNode}) {
@@ -19,18 +20,13 @@ const placeholderSource = {
   endDrag(props, monitor) {
     const item = monitor.getItem();
     const target = monitor.getDropResult();
-
-    if (target && item) {
-      const itemType = (target.osNode.tag.osDesigner || {}).itemType || ItemTypes.ELEMENT;
-      if (itemType === ItemTypes.ELEMENT) {
-        if (item.osNode.id.toString() !== target.osNode.id.toString()) {
-          //console.log("drop result", {item: item.osNode.id.toString(), target: target.osNode.id.toString()});
-          target.osNode.add(item.osNode.id);
-        }
-      }
-    }
+    return validateEndDrag({item, target}).then(() => {
+      //success
+      return target.osNode.add(item.osNode.id);
+    }, () => {});
   }
 };
+
 const placeholderTarget = {
   drop({osNode}, monitor, component) {
     const hasDroppedOnChild = monitor.didDrop();
