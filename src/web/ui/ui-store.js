@@ -1,7 +1,11 @@
 
 import React from "react";
 import Placeholder from "./components/placeholder";
+import DropBox from "./components/drop-box";
 import {EventEmitter} from "events";
+
+
+
 
 function injectDesigner(store) {
   store.overrideRender = function renderDesigner() {
@@ -10,7 +14,11 @@ function injectDesigner(store) {
       key: `placeholder:${this.id.toString()}`,
     };
     if (typeof this.tag !== "string") {
-      if ((this.tag.osDesigner || {}).renderInside) {
+      const osDesigner = (this.tag.osDesigner || {});
+      if (osDesigner.disablePlaceholder) {
+        return this.renderElement();
+      }
+      if (osDesigner.renderInside) {
         return this.renderElement({}, React.createElement(Placeholder, placeholderProps, this.renderChildren()));
       }
     }
@@ -25,6 +33,7 @@ export default class UiStore extends EventEmitter {
     injectDesigner(store);
     this.store = store;
     this.libs = [];
+    this.dropBoxLock = false;
   }
   register(lib) {
     this.libs.push(lib);
@@ -50,7 +59,9 @@ export default class UiStore extends EventEmitter {
       props = defaults.props;
       options = defaults.options;
     }
-    return osNode.create(control, props, options);
+    return osNode.create(control, props, options).then((node) => {
+      return this.store.refresh().then(() => node);
+    });
   }
   deleteElement(osNode) {
     if (osNode.parentId) {
@@ -59,5 +70,41 @@ export default class UiStore extends EventEmitter {
     this.store.remove(osNode);
     return this.store.refresh();
   }
+  setDropBox(osNode, monitor, component) {
+    // const dropItem = monitor.getItem();
+    // const sourceNode = dropItem.osNode;
 
+    if (!this.dropBoxLock) {
+      this.dropBoxLock = true;
+      console.log("unlocked");
+      return Promise.resolve().then(() => {
+        if (this.dropBox) {
+          console.log("this.dropBox Exists");
+          if (this.dropBox.parentId !== osNode.id) {
+            console.log("this.dropBox parent does not match", this.dropBox.parentId !== osNode.id, {dropBox: this.dropBox, osNode});
+            return this.deleteElement(this.dropBox).then(() => true);
+          }
+          return Promise.resolve(false);
+        }
+        console.log("this.dropBox does not exists", this);
+        return Promise.resolve(true);
+      }).then((create) => {
+        if (create) {
+          return this.createElement(osNode, DropBox, {}).then((node) => {
+            this.dropBox = node;
+          });
+        }
+        return undefined;
+      }).then(() => {
+        this.dropBoxLock = false;
+      });
+    }
+    return Promise.resolve();
+  }
+  clearDropBox() {
+    if (this.dropBox) {
+      return this.deleteElement(this.dropBox);
+    }
+    return Promise.resolve();
+  }
 }

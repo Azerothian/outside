@@ -22,10 +22,7 @@ export default class TreeNode {
     this.children.push(node.id);
     this.store.add(node);
     this.store.emit(`${this.id.toString()}:add`, node);
-    if (this.store.refresh) {
-      this.store.refresh();
-    }
-    return node;
+    return Promise.resolve(node);
   }
   remove(nodeId) {
     this.children = (this.children || []).filter((id) => {
@@ -45,7 +42,7 @@ export default class TreeNode {
     this.children.push(node.id);
     node.parentId = this.id;
     console.log(`${this.id.toString()}:add-child`, {parentId: this.id, childId: node.id});
-    return this.store.refresh();
+    return this;
     //return this.store.emit(`${this.id.toString()}:add-child`, node);
   }
   getParents() {

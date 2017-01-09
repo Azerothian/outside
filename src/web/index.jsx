@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 import DataStore from "web/os/store";
-import UiStore from "web/ui/store";
+import UiStore from "web/ui/ui-store";
 import Bootstrap from "web/ui/lib/bootstrap";
 import Formsy from "web/ui/lib/formsy";
 import FormsyMaterialUi from "web/ui/lib/formsy-material-ui";

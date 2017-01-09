@@ -1,15 +1,17 @@
 import React, {PropTypes} from "react";
-import {findDOMNode} from "react-dom";
+// import {findDOMNode} from "react-dom";
 import ItemTypes from "../item-types";
 import {DragSource, DropTarget} from "react-dnd";
 
-import ActionDelete from "material-ui/svg-icons/action/delete";
-import ActionAssignment from "material-ui/svg-icons/action/assignment";
+// import ActionDelete from "material-ui/svg-icons/action/delete";
+// import ActionAssignment from "material-ui/svg-icons/action/assignment";
 
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
 import IconButton from "material-ui/IconButton";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+
+// import DropBox from "./drop-box";
 
 import {validateEndDrag} from "../logic/dnd";
 
@@ -23,6 +25,8 @@ const placeholderSource = {
     return validateEndDrag({item, target}).then(() => {
       //success
       return target.osNode.add(item.osNode.id);
+    }).then(() => {
+      return target.osNode.store.ui.clearDropBox();
     }, () => {});
   }
 };
@@ -37,15 +41,16 @@ const placeholderTarget = {
   },
   hover({osNode}, monitor, component) {
     if (monitor.isOver({ shallow: true })) {
-      const dropItem = monitor.getItem();
-      if(dropItem.osNode) {// existing item 
-        
-      }
+      // console.log("osNode", osNode);
+      return osNode.store.ui.setDropBox(osNode, monitor, component);
+      // const dropItem = monitor.getItem();
+      // // const {control} = dropItem;
+      // const sourceNode = dropItem.osNode;
+      // if (sourceNode) {// existing item
+      // }
       //console.log("hover!", {item, osNode, monitor, component});
-
-      // const  = 
     }
-    
+    return undefined;
     // const hoverIndex = props.index;
 
     // // Don"t replace items with themselves
@@ -159,7 +164,6 @@ export default DragSource(ItemTypes.ELEMENT, placeholderSource, (connect, monito
         </div>
         <IconMenu
           style={{float: "right"}}
-          
           iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
           targetOrigin={{horizontal: "right", vertical: "top"}} >
           <MenuItem primaryText="Delete" onTouchTap={this.handleDeleteRequest} />

@@ -1,4 +1,5 @@
 import React from "react";
+import Promise from "bluebird";
 import {DragDropContext} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
@@ -22,7 +23,9 @@ export default DragDropContext(HTML5Backend)(React.createClass({
     this.props.store.refresh = this.handleForceUpdate;
   },
   handleForceUpdate() {
-    return this.forceUpdate();
+    return Promise.fromCallback((cb) => {
+      return this.forceUpdate(cb);
+    });
   },
   render() {
     return (<MuiThemeProvider>

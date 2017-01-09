@@ -18,6 +18,8 @@ const source = {
     return validateEndDrag({item, target}).then(() => {
       //success
       return target.osNode.store.ui.requestCreate(target.osNode, item.control);
+    }).then(() => {
+      return target.osNode.store.ui.clearDropBox();
     }, () => {});
   }
 };
