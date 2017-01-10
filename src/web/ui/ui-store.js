@@ -53,44 +53,69 @@ export default class UiStore extends EventEmitter {
   }
   createElement(osNode, control, newProps) {
     let options = {};
-    let props = Object.assign({}, props, newProps);
+    let props = {};
     const {defaults} = (control.osDesigner || {});
     if (defaults) {
       props = defaults.props;
       options = defaults.options;
     }
-    return osNode.create(control, props, options).then((node) => {
+    return osNode.create(control, Object.assign(props, newProps), options).then((node) => {
       return this.store.refresh().then(() => node);
     });
   }
   deleteElement(osNode) {
     if (osNode.parentId) {
-      this.store.get(osNode.parentId).remove(osNode.id);
+      const parent = this.store.get(osNode.parentId);
+      if (parent) {
+        parent.remove(osNode.id);
+      }
     }
     this.store.remove(osNode);
     return this.store.refresh();
   }
   setDropBox(osNode, monitor, component) {
-    // const dropItem = monitor.getItem();
-    // const sourceNode = dropItem.osNode;
+    const dropItem = monitor.getItem();
+    const sourceNode = dropItem.osNode;
+    let sourceTag;
+    if (sourceNode) {
+      if (sourceNode.id === osNode.id) {
+        return undefined;
+      }
+      sourceTag = sourceNode.tag;
+    } else {
+      sourceTag = dropItem.control;
+    }
 
     if (!this.dropBoxLock) {
       this.dropBoxLock = true;
-      console.log("unlocked");
       return Promise.resolve().then(() => {
         if (this.dropBox) {
-          console.log("this.dropBox Exists");
+          console.log("this.dropBox Exists", this.dropBox);
           if (this.dropBox.parentId !== osNode.id) {
             console.log("this.dropBox parent does not match", this.dropBox.parentId !== osNode.id, {dropBox: this.dropBox, osNode});
-            return this.deleteElement(this.dropBox).then(() => true);
+            return this.deleteElement(this.dropBox).then(() => {
+              delete this.dropBox;
+              return true;
+            });
           }
           return Promise.resolve(false);
         }
         console.log("this.dropBox does not exists", this);
         return Promise.resolve(true);
       }).then((create) => {
+        let dropBoxId = (this.dropBox || {}).id;
         if (create) {
-          return this.createElement(osNode, DropBox, {}).then((node) => {
+          let dropItemProps = {};
+          console.log("sourceTag - sourceNode", sourceNode);
+          if (sourceTag) {
+            console.log("sourceTag", sourceTag);
+            if (sourceTag.osDesigner) {
+              console.log("sourceTag.osDesigner", sourceTag.osDesigner);
+              dropItemProps = sourceTag.osDesigner.dropBox;
+            }
+          }
+          console.log("create - dropItemProps", dropItemProps);
+          return this.createElement(osNode, DropBox, dropItemProps).then((node) => {
             this.dropBox = node;
           });
         }
@@ -103,7 +128,9 @@ export default class UiStore extends EventEmitter {
   }
   clearDropBox() {
     if (this.dropBox) {
-      return this.deleteElement(this.dropBox);
+      return this.deleteElement(this.dropBox).then(() => {
+        delete this.dropBox;
+      });
     }
     return Promise.resolve();
   }

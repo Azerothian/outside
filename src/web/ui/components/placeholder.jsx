@@ -27,7 +27,9 @@ const placeholderSource = {
       return target.osNode.add(item.osNode.id);
     }).then(() => {
       return target.osNode.store.ui.clearDropBox();
-    }, () => {});
+    }, () => {
+      return target.osNode.store.ui.clearDropBox();
+    });
   }
 };
 

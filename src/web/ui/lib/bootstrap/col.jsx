@@ -46,6 +46,9 @@ Col.osDesigner = {
     immediate: true,
     tag: Bootstrap.controls.Row,
   },
+  dropBox: {
+    className: "col-xs-1",
+  },
   renderInside: true,
   itemType: ItemTypes.ELEMENT,
   form() {

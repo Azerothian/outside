@@ -1,12 +1,12 @@
 import React from "react";
 
 export default function DropBox(props) {
+  console.log("DropBox Props", props);
   return (<div style={Object.assign({
     minHeight: 48,
-    width: "100%",
     border: "1px dashed #DADADA",
     backgroundColor: "#eeeeee",
-  }, props.style)} />);
+  }, props.style)} {...props} />);
 }
 
 DropBox.osDesigner = {
