@@ -1,11 +1,7 @@
-
 import React from "react";
 import Placeholder from "./components/placeholder";
 import DropBox from "./components/drop-box";
 import {EventEmitter} from "events";
-
-
-
 
 function injectDesigner(store) {
   store.overrideRender = function renderDesigner() {
@@ -76,23 +72,16 @@ export default class UiStore extends EventEmitter {
   setDropBox(osNode, monitor, component) {
     const dropItem = monitor.getItem();
     const sourceNode = dropItem.osNode;
-    let sourceTag;
     if (sourceNode) {
       if (sourceNode.id === osNode.id) {
         return undefined;
       }
-      sourceTag = sourceNode.tag;
-    } else {
-      sourceTag = dropItem.control;
     }
-
     if (!this.dropBoxLock) {
       this.dropBoxLock = true;
       return Promise.resolve().then(() => {
         if (this.dropBox) {
-          console.log("this.dropBox Exists", this.dropBox);
           if (this.dropBox.parentId !== osNode.id) {
-            console.log("this.dropBox parent does not match", this.dropBox.parentId !== osNode.id, {dropBox: this.dropBox, osNode});
             return this.deleteElement(this.dropBox).then(() => {
               delete this.dropBox;
               return true;
@@ -100,21 +89,21 @@ export default class UiStore extends EventEmitter {
           }
           return Promise.resolve(false);
         }
-        console.log("this.dropBox does not exists", this);
         return Promise.resolve(true);
       }).then((create) => {
-        let dropBoxId = (this.dropBox || {}).id;
         if (create) {
           let dropItemProps = {};
-          console.log("sourceTag - sourceNode", sourceNode);
+          let sourceTag;
+          if (sourceNode) {
+            sourceTag = sourceNode.tag;
+          } else {
+            sourceTag = dropItem.control;
+          }
           if (sourceTag) {
-            console.log("sourceTag", sourceTag);
             if (sourceTag.osDesigner) {
-              console.log("sourceTag.osDesigner", sourceTag.osDesigner);
               dropItemProps = sourceTag.osDesigner.dropBox;
             }
           }
-          console.log("create - dropItemProps", dropItemProps);
           return this.createElement(osNode, DropBox, dropItemProps).then((node) => {
             this.dropBox = node;
           });
